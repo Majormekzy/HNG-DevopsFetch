@@ -1,38 +1,60 @@
 # HNG-DevopsFetch
 
-## DevOpsFetch Script Documentation
-
 ### Overview
 `devopsfetch.sh` is a tool designed to collect and display system information for DevOps purposes. It provides details about active ports, Docker containers, Nginx configurations, user logins, and system activities within specified time ranges. The script includes a logging mechanism to monitor and log activities continuously.
 
-### Installation and Configuration Steps
+**Initial Guide:**
 
-#### Prerequisites
-- Ensure your system has the necessary permissions to run the script as root.
-- Ensure `netstat`, `docker`, `nginx`, and other relevant commands are available on your system.
+1. **Installation Script:**
+   - Ensured script is run with root privileges.
+   - Installed necessary dependencies (`net-tools`, `nginx`, etc.).
+   - Ensured services (`nginx`) are running.
+   - Created log file and set permissions.
+   - Made the `devopsfetch.sh` script executable.
 
-#### Installation
-1. **Clone or Download the Script:**
-   Download the `devopsfetch.sh` script to your desired directory.
+2. **Main Script (`devopsfetch.sh`):**
+   - Display help.
+   - Display active ports and services.
+   - Display information about a specific port.
+   - List Docker images and containers.
+   - Display Docker container details.
+   - Display Nginx domains and ports.
+   - Display Nginx configuration details for a specific domain.
+   - List users and their last login times.
+   - Display information about a specific user.
+   - Display activities within a specified time range.
+   - Log activities.
 
-2. **Make the Script Executable:**
+3. **Systemd Service:**
+   - Created and edited the service file.
+   - Reloaded systemd.
+   - Enabled and started the service.
+
+4. **Usage Examples:**
+   - Covered all command-line options (`-p`, `-d`, `-n`, `-u`, `-t`, `-h`).
+
+5. **Logging Mechanism:**
+   - Described how to retrieve logs.
+
+#### Installation and Configuration Steps
+
+1. **Download and Make the Script Executable:**
    ```bash
    sudo chmod +x /usr/local/bin/devopsfetch.sh
    ```
 
-3. **Create a Log File:**
-   Ensure the log file exists and has the appropriate permissions:
+2. **Create a Log File:**
    ```bash
    sudo touch /var/log/devopsfetch.log
    sudo chmod 664 /var/log/devopsfetch.log
    ```
 
-4. **Create and Edit the Installation Script:**
+3. **Create and Edit the Installation Script:**
    ```bash
    sudo nano /usr/local/bin/install_devopsfetch.sh
    ```
 
-5. **Paste the Following Script:**
+4. **Paste the Following Script:**
 
    ```bash
    #!/bin/bash
@@ -45,13 +67,11 @@
 
    # Update package list and install necessary packages
    apt update
-   apt install -y net-tools docker.io nginx
+   apt install -y net-tools nginx
 
-   # Ensure Nginx and Docker services are running
+   # Ensure Nginx service is running
    systemctl enable nginx
    systemctl start nginx
-   systemctl enable docker
-   systemctl start docker
 
    # Create log file and set appropriate permissions
    touch /var/log/devopsfetch.log
@@ -63,23 +83,20 @@
    echo "Installation and configuration complete."
    ```
 
-6. **Save and Close the Script:**
+5. **Save and Close the Script:**
    Press `CTRL+X`, then `Y`, and then `Enter` to save and exit the editor.
 
-7. **Make the Script Executable:**
+6. **Make the Script Executable:**
    ```bash
    sudo chmod +x /usr/local/bin/install_devopsfetch.sh
    ```
 
-8. **Run the Installation Script:**
+7. **Run the Installation Script:**
    ```bash
    sudo /usr/local/bin/install_devopsfetch.sh
    ```
 
-#### Configuration
-- The script assumes the standard paths for Nginx configuration files (`/etc/nginx/sites-available/` and `/etc/nginx/conf.d/`). Adjust the script if your configuration files are located elsewhere.
-
-#### Create the `devopsfetch.sh` Script
+#### Main Script (`devopsfetch.sh`)
 
 1. **Create and Edit the Script:**
    ```bash
@@ -217,7 +234,9 @@
        while read -r line; do
            # Extract the date and time from the log entry
            log_date=$(echo "$line" | awk -F: '{print $1":"$2":"$3}')
-           log_epoch=$(parse_log_date "$log_date")
+          
+
+ log_epoch=$(parse_log_date "$log_date")
            
            if [ -n "$log_epoch" ]; then
                echo "Debug: log_date=$log_date, log_epoch=$log_epoch" >&2
@@ -250,9 +269,7 @@
            fi
            ;;
        -n|--nginx)
-           if
-
- [ -z "$2" ]; then
+           if [ -z "$2" ]; then
                show_nginx
            else
                show_nginx_details $2
